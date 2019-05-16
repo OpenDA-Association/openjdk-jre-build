@@ -1,0 +1,49 @@
+<project name="openjdk-jre-build" default="help" basedir=".">
+  <property file="build.properties"/>
+  <!-- <property name="jre-modules" value="java.base,java.xml,java.desktop,java.se,jdk.management,jdk.unsupported,jdk.xml.dom,jdk.charsets"/> -->
+  <property name="jre-modules" value="java.base,java.xml,java.desktop,java.se"/>
+
+  <condition value="windows" property="platform" else="linux">
+    <os family="windows"/>
+  </condition>
+  <condition value="true" property="isWindows">
+    <os family="windows"/>
+  </condition>
+  <condition value="true" property="isLinux">
+    <os family="unix"/>
+  </condition>
+
+  <target name="build" depends="create-openda-jre">
+  </target>
+
+  <target name="create-openda-jre">
+    <delete dir="ant_temp/jre"/>
+    <exec executable="${java.home}/bin/jlink">
+      <arg value="--output=ant_temp/jre"/>
+      <arg value="--compress=2"/>
+      <arg value="--no-man-pages"/>
+      <arg value="--no-header-files"/>
+      <arg value="--strip-debug"/>
+      <arg value="--add-modules=${jre-modules}"/>
+    </exec>
+    <antcall target="package-openda-jre-linux"/>
+    <antcall target="package-openda-jre-windows"/>
+  </target>
+
+  <target name="package-openda-jre-linux" if="isLinux">
+    <echo message="Package Linux stripped down jre"/>
+    <tar compression="gzip" destfile="${basedir}/openda-jre-${platform}-${java.version}.tar.gz">
+    <tarfileset dir="ant_temp" includes="*/**" filemode="550">
+      <include name="*.sh"/>
+    </tarfileset>
+    </tar>
+    <delete dir="ant_temp/jre"/>
+  </target>
+  
+  <target name="package-openda-jre-windows" if="isWindows">
+    <echo message="Package Windows stripped down jre"/>
+    <zip basedir="ant_temp" destfile="${basedir}/openda-jre-${platform}-${java.version}.zip"/>
+    <delete dir="ant_temp/jre"/>
+  </target>
+
+</project>
