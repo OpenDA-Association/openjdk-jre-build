@@ -1,7 +1,6 @@
 <project name="openjdk-jre-build" default="help" basedir=".">
   <property file="build.properties"/>
-  <!-- <property name="jre-modules" value="java.base,java.xml,java.desktop,java.se,jdk.management,jdk.unsupported,jdk.xml.dom,jdk.charsets"/> -->
-  <property name="jre-modules" value="java.base,java.xml,java.desktop,java.se,jdk.unsupported"/>
+  <property name="jre-modules" value="java.base,java.xml,java.desktop,java.se,jdk.management,jdk.unsupported,jdk.xml.dom,jdk.charsets"/>
 
   <condition value="windows" property="platform" else="linux">
     <os family="windows"/>
